@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Freela - Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .navbar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .navbar-brand .navbar-item {
+        color: white !important;
+        font-weight: bold;
+      }
+      .navbar-end .navbar-item {
+        color: white !important;
+      }
+      .navbar-end .button {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .navbar-end .button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .tabs ul {
+        border-bottom-color: #667eea;
+      }
+      .tabs a {
+        border-bottom-color: transparent;
+      }
+      .tabs .is-active a {
+        border-bottom-color: #667eea;
+        color: #667eea;
+      }
+      .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .summary-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      .modal-card-title {
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation">
+      <div class="navbar-brand">
+        <div class="navbar-item">
+          <i class="fas fa-briefcase mr-2"></i>
+          Meu Freela
+        </div>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <button class="button" onclick="logout()">
+            <span class="icon">
+              <i class="fas fa-sign-out-alt"></i>
+            </span>
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container mt-4">
+      <!-- Resumo Financeiro -->
+      <div class="columns">
+        <div class="column is-6">
+          <div class="card summary-card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <span class="icon is-large">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                  </span>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4 has-text-white">Total Recebido</p>
+                  <p class="subtitle is-6 has-text-white" id="total-recebido">
+                    R$ 0,00
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="card summary-card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <span class="icon is-large">
+                    <i class="fas fa-clock fa-2x"></i>
+                  </span>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4 has-text-white">Total Pendente</p>
+                  <p class="subtitle is-6 has-text-white" id="total-pendente">
+                    R$ 0,00
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs de Navegação -->
+      <div class="tabs is-centered is-boxed">
+        <ul>
+          <li id="tab-clientes" class="is-active">
+            <a onclick="showTab('clientes')">
+              <span class="icon is-small"><i class="fas fa-users"></i></span>
+              <span>Clientes</span>
+            </a>
+          </li>
+          <li id="tab-jobs">
+            <a onclick="showTab('jobs')">
+              <span class="icon is-small"
+                ><i class="fas fa-briefcase"></i
+              ></span>
+              <span>Jobs</span>
+            </a>
+          </li>
+          <li id="tab-pagamentos">
+            <a onclick="showTab('pagamentos')">
+              <span class="icon is-small"
+                ><i class="fas fa-money-bill"></i
+              ></span>
+              <span>Pagamentos</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Seção Clientes -->
+      <div id="section-clientes">
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <h2 class="title is-4">Clientes</h2>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <button class="button is-primary" onclick="openClientModal()">
+                <span class="icon">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span>Novo Cliente</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="clients-list"></div>
+      </div>
+
+      <!-- Seção Jobs -->
+      <div id="section-jobs" style="display: none">
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <h2 class="title is-4">Jobs</h2>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <button class="button is-primary" onclick="openJobModal()">
+                <span class="icon">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span>Novo Job</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="jobs-list"></div>
+      </div>
+
+      <!-- Seção Pagamentos -->
+      <div id="section-pagamentos" style="display: none">
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <h2 class="title is-4">Pagamentos</h2>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <button class="button is-primary" onclick="openPaymentModal()">
+                <span class="icon">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span>Novo Pagamento</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="payments-list"></div>
+      </div>
+    </div>
+
+    <!-- Modal Cliente -->
+    <div id="client-modal" class="modal">
+      <div class="modal-background" onclick="closeClientModal()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title" id="client-modal-title">Novo Cliente</p>
+          <button class="delete" onclick="closeClientModal()"></button>
+        </header>
+        <section class="modal-card-body">
+          <form id="client-form">
+            <input type="hidden" id="client-id" />
+            <div class="field">
+              <label class="label">Nome</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  id="client-nome"
+                  placeholder="Nome do cliente"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Contato</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  id="client-contato"
+                  placeholder="Email ou telefone"
+                />
+              </div>
+            </div>
+          </form>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" onclick="saveClient()">
+            Salvar
+          </button>
+          <button class="button" onclick="closeClientModal()">Cancelar</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Modal Job -->
+    <div id="job-modal" class="modal">
+      <div class="modal-background" onclick="closeJobModal()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title" id="job-modal-title">Novo Job</p>
+          <button class="delete" onclick="closeJobModal()"></button>
+        </header>
+        <section class="modal-card-body">
+          <form id="job-form">
+            <input type="hidden" id="job-id" />
+            <div class="field">
+              <label class="label">Cliente</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="job-cliente" required>
+                    <option value="">Selecione um cliente</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Descrição</label>
+              <div class="control">
+                <textarea
+                  class="textarea"
+                  id="job-descricao"
+                  placeholder="Descrição do trabalho"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Valor (R$)</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="number"
+                  step="0.01"
+                  id="job-valor"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Status</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="job-status" required>
+                    <option value="pendente">Pendente</option>
+                    <option value="em_andamento">Em Andamento</option>
+                    <option value="concluido">Concluído</option>
+                    <option value="cancelado">Cancelado</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Data</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="datetime-local"
+                  id="job-data"
+                  required
+                />
+              </div>
+            </div>
+          </form>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" onclick="saveJob()">Salvar</button>
+          <button class="button" onclick="closeJobModal()">Cancelar</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Modal Pagamento -->
+    <div id="payment-modal" class="modal">
+      <div class="modal-background" onclick="closePaymentModal()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Novo Pagamento</p>
+          <button class="delete" onclick="closePaymentModal()"></button>
+        </header>
+        <section class="modal-card-body">
+          <form id="payment-form">
+            <div class="field">
+              <label class="label">Job</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="payment-job" required>
+                    <option value="">Selecione um job</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Valor (R$)</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="number"
+                  step="0.01"
+                  id="payment-valor"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Status</label>
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox" id="payment-recebido" />
+                  Pagamento Recebido
+                </label>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Data</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="datetime-local"
+                  id="payment-data"
+                  required
+                />
+              </div>
+            </div>
+          </form>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" onclick="savePayment()">
+            Salvar
+          </button>
+          <button class="button" onclick="closePaymentModal()">Cancelar</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Area de notificação -->
+    <div
+      id="notification-area"
+      class="is-fixed"
+      style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        width: 300px;
+      "
+    ></div>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

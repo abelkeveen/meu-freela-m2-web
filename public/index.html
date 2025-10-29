@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Freela - Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .notification.is-danger {
+        margin-top: 1rem;
+      }
+      .notification.is-success {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-4">
+              <div class="box">
+                <div class="has-text-centered mb-5">
+                  <h1 class="title is-3">
+                    <i class="fas fa-briefcase mr-2"></i>
+                    Meu Freela
+                  </h1>
+                  <p class="subtitle is-6">
+                    Sistema de Agendamento e Organização
+                  </p>
+                </div>
+
+                <!-- Tabs para alternar entre Login e Registro -->
+                <div class="tabs is-centered is-boxed">
+                  <ul>
+                    <li id="login-tab" class="is-active">
+                      <a onclick="showLogin()">
+                        <span class="icon is-small"
+                          ><i class="fas fa-sign-in-alt"></i
+                        ></span>
+                        <span>Login</span>
+                      </a>
+                    </li>
+                    <li id="register-tab">
+                      <a onclick="showRegister()">
+                        <span class="icon is-small"
+                          ><i class="fas fa-user-plus"></i
+                        ></span>
+                        <span>Registrar</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Formulário de Login -->
+                <form id="login-form">
+                  <div class="field">
+                    <label class="label">Login</label>
+                    <div class="control has-icons-left">
+                      <input
+                        class="input"
+                        type="text"
+                        id="login-username"
+                        placeholder="Digite seu login"
+                        required
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label class="label">Senha</label>
+                    <div class="control has-icons-left">
+                      <input
+                        class="input"
+                        type="password"
+                        id="login-password"
+                        placeholder="Digite sua senha"
+                        required
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <div class="control">
+                      <button
+                        class="button is-primary is-fullwidth"
+                        type="submit"
+                        id="login-btn"
+                      >
+                        <span class="icon is-small">
+                          <i class="fas fa-sign-in-alt"></i>
+                        </span>
+                        <span>Entrar</span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <!-- Formulário de Registro -->
+                <form id="register-form" style="display: none">
+                  <div class="field">
+                    <label class="label">Login</label>
+                    <div class="control has-icons-left">
+                      <input
+                        class="input"
+                        type="text"
+                        id="register-username"
+                        placeholder="Digite um login"
+                        required
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label class="label">Senha</label>
+                    <div class="control has-icons-left">
+                      <input
+                        class="input"
+                        type="password"
+                        id="register-password"
+                        placeholder="Digite uma senha"
+                        required
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <div class="control">
+                      <button
+                        class="button is-success is-fullwidth"
+                        type="submit"
+                        id="register-btn"
+                      >
+                        <span class="icon is-small">
+                          <i class="fas fa-user-plus"></i>
+                        </span>
+                        <span>Registrar</span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <!-- Area de mensagens -->
+                <div id="message-area"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      let currentForm = "login";
+
+      function showLogin() {
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("login-tab").classList.add("is-active");
+        document.getElementById("register-tab").classList.remove("is-active");
+        clearMessages();
+        currentForm = "login";
+      }
+
+      function showRegister() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("register-form").style.display = "block";
+        document.getElementById("login-tab").classList.remove("is-active");
+        document.getElementById("register-tab").classList.add("is-active");
+        clearMessages();
+        currentForm = "register";
+      }
+
+      function showMessage(message, type = "danger") {
+        const messageArea = document.getElementById("message-area");
+        messageArea.innerHTML = `
+                <div class="notification is-${type}">
+                    <button class="delete" onclick="clearMessages()"></button>
+                    ${message}
+                </div>
+            `;
+      }
+
+      function clearMessages() {
+        document.getElementById("message-area").innerHTML = "";
+      }
+
+      function setLoading(isLoading) {
+        const loginBtn = document.getElementById("login-btn");
+        const registerBtn = document.getElementById("register-btn");
+
+        if (isLoading) {
+          loginBtn.classList.add("is-loading");
+          registerBtn.classList.add("is-loading");
+        } else {
+          loginBtn.classList.remove("is-loading");
+          registerBtn.classList.remove("is-loading");
+        }
+      }
+
+      // Evento de login
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          setLoading(true);
+          clearMessages();
+
+          const login = document.getElementById("login-username").value;
+          const senha = document.getElementById("login-password").value;
+
+          try {
+            const response = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ login, senha }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              localStorage.setItem("token", data.token);
+              showMessage(
+                "Login realizado com sucesso! Redirecionando...",
+                "success"
+              );
+              setTimeout(() => {
+                window.location.href = "/dashboard";
+              }, 1500);
+            } else {
+              showMessage(data.error || "Erro ao fazer login");
+            }
+          } catch (error) {
+            showMessage("Erro de conexão. Verifique se a API está rodando.");
+          } finally {
+            setLoading(false);
+          }
+        });
+
+      // Evento de registro
+      document
+        .getElementById("register-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          setLoading(true);
+          clearMessages();
+
+          const login = document.getElementById("register-username").value;
+          const senha = document.getElementById("register-password").value;
+
+          try {
+            const response = await fetch("/api/auth/register", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ login, senha }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              showMessage(
+                "Usuário criado com sucesso! Agora você pode fazer login.",
+                "success"
+              );
+              document.getElementById("register-form").reset();
+              setTimeout(() => {
+                showLogin();
+              }, 2000);
+            } else {
+              showMessage(data.error || "Erro ao criar usuário");
+            }
+          } catch (error) {
+            showMessage("Erro de conexão. Verifique se a API está rodando.");
+          } finally {
+            setLoading(false);
+          }
+        });
+
+      // Verificar se já está logado
+      window.addEventListener("load", () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+          window.location.href = "/dashboard";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -71,9 +71,11 @@ function showNotification(message, type = "info", duration = 5000) {
   const notification = document.createElement("div");
   notification.className = `notification is-${type}`;
   notification.id = `notification-${notificationId}`;
+  notification.dataset.cy = "notification";
+  notification.dataset.type = type;
   notification.innerHTML = `
         <button class="delete" onclick="removeNotification('${notificationId}')"></button>
-        ${message}
+        ${escapeHtml(message)}
     `;
 
   notificationArea.appendChild(notification);
@@ -124,6 +126,26 @@ function showTab(tabName) {
   }
 }
 
+// Escapa texto vindo da API antes de inserir no HTML
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Data/hora local no formato aceito por <input type="datetime-local">
+function toLocalInputValue(date) {
+  const d = new Date(date);
+  if (isNaN(d)) return "";
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
+}
+
 // Funções para formatar valores
 function formatCurrency(value) {
   return new Intl.NumberFormat("pt-BR", {
@@ -166,7 +188,7 @@ function renderClients() {
 
   if (clients.length === 0) {
     clientsList.innerHTML = `
-            <div class="notification is-info">
+            <div class="notification is-info" data-cy="clients-empty">
                 <i class="fas fa-info-circle mr-2"></i>
                 Nenhum cliente cadastrado. Clique em "Novo Cliente" para adicionar o primeiro.
             </div>
@@ -177,30 +199,30 @@ function renderClients() {
   const clientsHtml = clients
     .map(
       (client) => `
-        <div class="card mb-3">
+        <div class="card mb-3" data-cy="client-card" data-id="${client.id}">
             <div class="card-content">
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
                             <div>
-                                <p class="title is-5">${client.nome}</p>
-                                <p class="subtitle is-6">${
+                                <p class="title is-5" data-cy="client-card-nome">${escapeHtml(client.nome)}</p>
+                                <p class="subtitle is-6" data-cy="client-card-contato">${escapeHtml(
                                   client.contato || "Sem contato"
-                                }</p>
+                                )}</p>
                             </div>
                         </div>
                     </div>
                     <div class="level-right">
                         <div class="level-item">
                             <div class="buttons">
-                                <button class="button is-small is-info" onclick="editClient(${
+                                <button class="button is-small is-info" data-cy="client-edit-btn" onclick="editClient(${
                                   client.id
                                 })">
                                     <span class="icon">
                                         <i class="fas fa-edit"></i>
                                     </span>
                                 </button>
-                                <button class="button is-small is-danger" onclick="deleteClient(${
+                                <button class="button is-small is-danger" data-cy="client-delete-btn" onclick="deleteClient(${
                                   client.id
                                 })">
                                     <span class="icon">
@@ -331,8 +353,9 @@ async function loadJobs() {
   const data = await authenticatedRequest("/api/jobs");
   if (data) {
     jobs = data;
+    // Recarrega os clientes antes de desenhar, para mostrar o nome correto
+    await fetchClients();
     renderJobs();
-    loadClientsForSelect(); // Carregar clientes para o select do modal
   }
 }
 
@@ -342,7 +365,7 @@ function renderJobs() {
 
   if (jobs.length === 0) {
     jobsList.innerHTML = `
-            <div class="notification is-info">
+            <div class="notification is-info" data-cy="jobs-empty">
                 <i class="fas fa-info-circle mr-2"></i>
                 Nenhum job cadastrado. Clique em "Novo Job" para adicionar o primeiro.
             </div>
@@ -352,28 +375,30 @@ function renderJobs() {
 
   const jobsHtml = jobs
     .map((job) => {
-      const client = clients.find((c) => c.id === job.clienteId);
+      const client = clients.find((c) => c.id == job.clienteId);
       const statusColor = getStatusColor(job.status);
 
       return `
-            <div class="card mb-3">
+            <div class="card mb-3" data-cy="job-card" data-id="${job.id}">
                 <div class="card-content">
                     <div class="level">
                         <div class="level-left">
                             <div class="level-item">
                                 <div>
-                                    <p class="title is-5">${job.descricao}</p>
-                                    <p class="subtitle is-6">Cliente: ${
+                                    <p class="title is-5" data-cy="job-card-descricao">${escapeHtml(
+                                      job.descricao
+                                    )}</p>
+                                    <p class="subtitle is-6" data-cy="job-card-cliente">Cliente: ${escapeHtml(
                                       client
                                         ? client.nome
                                         : "Cliente não encontrado"
-                                    }</p>
-                                    <p class="subtitle is-6">Valor: ${formatCurrency(
+                                    )}</p>
+                                    <p class="subtitle is-6" data-cy="job-card-valor">Valor: ${formatCurrency(
                                       job.valor
                                     )}</p>
-                                    <span class="tag ${statusColor}">${
-        job.status
-      }</span>
+                                    <span class="tag ${statusColor}" data-cy="job-card-status">${escapeHtml(
+                                      job.status
+                                    )}</span>
                                     <p class="has-text-grey is-size-7 mt-2">${formatDate(
                                       job.data
                                     )}</p>
@@ -383,14 +408,14 @@ function renderJobs() {
                         <div class="level-right">
                             <div class="level-item">
                                 <div class="buttons">
-                                    <button class="button is-small is-info" onclick="editJob(${
+                                    <button class="button is-small is-info" data-cy="job-edit-btn" onclick="editJob(${
                                       job.id
                                     })">
                                         <span class="icon">
                                             <i class="fas fa-edit"></i>
                                         </span>
                                     </button>
-                                    <button class="button is-small is-danger" onclick="deleteJob(${
+                                    <button class="button is-small is-danger" data-cy="job-delete-btn" onclick="deleteJob(${
                                       job.id
                                     })">
                                         <span class="icon">
@@ -437,17 +462,13 @@ async function openJobModal(job = null) {
     document.getElementById("job-descricao").value = job.descricao;
     document.getElementById("job-valor").value = job.valor;
     document.getElementById("job-status").value = job.status;
-    document.getElementById("job-data").value = new Date(job.data)
-      .toISOString()
-      .slice(0, 16);
+    document.getElementById("job-data").value = toLocalInputValue(job.data);
   } else {
     document.getElementById("job-modal-title").textContent = "Novo Job";
     document.getElementById("job-form").reset();
     document.getElementById("job-id").value = "";
     // Definir data atual como padrão
-    document.getElementById("job-data").value = new Date()
-      .toISOString()
-      .slice(0, 16);
+    document.getElementById("job-data").value = toLocalInputValue(new Date());
   }
 
   document.getElementById("job-modal").classList.add("is-active");
@@ -458,19 +479,25 @@ function closeJobModal() {
   currentEditingJob = null;
 }
 
-async function loadClientsForSelect() {
-  if (clients.length === 0) {
-    const data = await authenticatedRequest("/api/clients");
-    if (data) {
-      clients = data;
-    }
+// Busca a lista atual de clientes (sem mexer na tela)
+async function fetchClients() {
+  const data = await authenticatedRequest("/api/clients");
+  if (data) {
+    clients = data;
   }
+}
+
+// Preenche o select de clientes do modal de job
+async function loadClientsForSelect() {
+  await fetchClients();
 
   const select = document.getElementById("job-cliente");
   select.innerHTML = '<option value="">Selecione um cliente</option>';
 
   clients.forEach((client) => {
-    select.innerHTML += `<option value="${client.id}">${client.nome}</option>`;
+    select.innerHTML += `<option value="${client.id}">${escapeHtml(
+      client.nome
+    )}</option>`;
   });
 }
 
@@ -567,8 +594,9 @@ async function loadPayments() {
   const data = await authenticatedRequest("/api/payments");
   if (data) {
     payments = data;
+    // Recarrega os jobs antes de desenhar, para mostrar a descrição correta
+    await fetchJobs();
     renderPayments();
-    loadJobsForPaymentSelect(); // Carregar jobs para o select do modal
   }
 }
 
@@ -578,7 +606,7 @@ function renderPayments() {
 
   if (payments.length === 0) {
     paymentsList.innerHTML = `
-            <div class="notification is-info">
+            <div class="notification is-info" data-cy="payments-empty">
                 <i class="fas fa-info-circle mr-2"></i>
                 Nenhum pagamento registrado. Clique em "Novo Pagamento" para adicionar o primeiro.
             </div>
@@ -588,26 +616,28 @@ function renderPayments() {
 
   const paymentsHtml = payments
     .map((payment) => {
-      const job = jobs.find((j) => j.id === payment.jobId);
+      const job = jobs.find((j) => j.id == payment.jobId);
       const statusColor = payment.recebido ? "is-success" : "is-warning";
       const statusText = payment.recebido ? "Recebido" : "Pendente";
       const clienteNome = payment.clienteNome || "Cliente não informado";
 
       return `
-            <div class="card mb-3">
+            <div class="card mb-3" data-cy="payment-card" data-id="${payment.id}">
                 <div class="card-content">
                     <div class="level">
                         <div class="level-left">
                             <div class="level-item">
                                 <div>
-                                    <p class="title is-5">${formatCurrency(
+                                    <p class="title is-5" data-cy="payment-card-valor">${formatCurrency(
                                       payment.valor
                                     )}</p>
-                                    <p class="subtitle is-6">Job: ${
+                                    <p class="subtitle is-6" data-cy="payment-card-job">Job: ${escapeHtml(
                                       job ? job.descricao : "Job não encontrado"
-                                    }</p>
-                                    <p class="subtitle is-6">Cliente: ${clienteNome}</p>
-                                    <span class="tag ${statusColor}">${statusText}</span>
+                                    )}</p>
+                                    <p class="subtitle is-6" data-cy="payment-card-cliente">Cliente: ${escapeHtml(
+                                      clienteNome
+                                    )}</p>
+                                    <span class="tag ${statusColor}" data-cy="payment-card-status">${statusText}</span>
                                     <p class="has-text-grey is-size-7 mt-2">${formatDate(
                                       payment.data
                                     )}</p>
@@ -617,7 +647,7 @@ function renderPayments() {
                         <div class="level-right">
                             <div class="level-item">
                                 <div class="buttons">
-                                    <button class="button is-small ${
+                                    <button data-cy="payment-toggle-btn" class="button is-small ${
                                       payment.recebido
                                         ? "is-warning"
                                         : "is-success"
@@ -656,9 +686,7 @@ async function openPaymentModal() {
   await loadJobsForPaymentSelect();
   document.getElementById("payment-form").reset();
   // Definir data atual como padrão
-  document.getElementById("payment-data").value = new Date()
-    .toISOString()
-    .slice(0, 16);
+  document.getElementById("payment-data").value = toLocalInputValue(new Date());
   document.getElementById("payment-modal").classList.add("is-active");
 }
 
@@ -666,21 +694,25 @@ function closePaymentModal() {
   document.getElementById("payment-modal").classList.remove("is-active");
 }
 
-async function loadJobsForPaymentSelect() {
-  if (jobs.length === 0) {
-    const data = await authenticatedRequest("/api/jobs");
-    if (data) {
-      jobs = data;
-    }
+// Busca a lista atual de jobs (sem mexer na tela)
+async function fetchJobs() {
+  const data = await authenticatedRequest("/api/jobs");
+  if (data) {
+    jobs = data;
   }
+}
+
+// Preenche o select de jobs do modal de pagamento
+async function loadJobsForPaymentSelect() {
+  await fetchJobs();
 
   const select = document.getElementById("payment-job");
   select.innerHTML = '<option value="">Selecione um job</option>';
 
   jobs.forEach((job) => {
-    select.innerHTML += `<option value="${job.id}">${
+    select.innerHTML += `<option value="${job.id}">${escapeHtml(
       job.descricao
-    } - ${formatCurrency(job.valor)}</option>`;
+    )} - ${formatCurrency(job.valor)}</option>`;
   });
 }
 

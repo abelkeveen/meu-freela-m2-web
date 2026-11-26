@@ -64,7 +64,7 @@
       </div>
       <div class="navbar-end">
         <div class="navbar-item">
-          <button class="button" onclick="logout()">
+          <button class="button" onclick="logout()" data-cy="logout-btn">
             <span class="icon">
               <i class="fas fa-sign-out-alt"></i>
             </span>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="media-content">
                   <p class="title is-4 has-text-white">Total Recebido</p>
-                  <p class="subtitle is-6 has-text-white" id="total-recebido">
+                  <p class="subtitle is-6 has-text-white" id="total-recebido" data-cy="total-recebido">
                     R$ 0,00
                   </p>
                 </div>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="media-content">
                   <p class="title is-4 has-text-white">Total Pendente</p>
-                  <p class="subtitle is-6 has-text-white" id="total-pendente">
+                  <p class="subtitle is-6 has-text-white" id="total-pendente" data-cy="total-pendente">
                     R$ 0,00
                   </p>
                 </div>
@@ -121,22 +121,22 @@
       <!-- Tabs de Navegação -->
       <div class="tabs is-centered is-boxed">
         <ul>
-          <li id="tab-clientes" class="is-active">
-            <a onclick="showTab('clientes')">
+          <li id="tab-clientes" data-cy="tab-clientes" class="is-active">
+            <a onclick="showTab('clientes')" data-cy="tab-clientes-link">
               <span class="icon is-small"><i class="fas fa-users"></i></span>
               <span>Clientes</span>
             </a>
           </li>
-          <li id="tab-jobs">
-            <a onclick="showTab('jobs')">
+          <li id="tab-jobs" data-cy="tab-jobs">
+            <a onclick="showTab('jobs')" data-cy="tab-jobs-link">
               <span class="icon is-small"
                 ><i class="fas fa-briefcase"></i
               ></span>
               <span>Jobs</span>
             </a>
           </li>
-          <li id="tab-pagamentos">
-            <a onclick="showTab('pagamentos')">
+          <li id="tab-pagamentos" data-cy="tab-pagamentos">
+            <a onclick="showTab('pagamentos')" data-cy="tab-pagamentos-link">
               <span class="icon is-small"
                 ><i class="fas fa-money-bill"></i
               ></span>
@@ -147,7 +147,7 @@
       </div>
 
       <!-- Seção Clientes -->
-      <div id="section-clientes">
+      <div id="section-clientes" data-cy="section-clientes">
         <div class="level">
           <div class="level-left">
             <div class="level-item">
@@ -156,7 +156,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <button class="button is-primary" onclick="openClientModal()">
+              <button class="button is-primary" onclick="openClientModal()" data-cy="new-client-btn">
                 <span class="icon">
                   <i class="fas fa-plus"></i>
                 </span>
@@ -165,11 +165,11 @@
             </div>
           </div>
         </div>
-        <div id="clients-list"></div>
+        <div id="clients-list" data-cy="clients-list"></div>
       </div>
 
       <!-- Seção Jobs -->
-      <div id="section-jobs" style="display: none">
+      <div id="section-jobs" data-cy="section-jobs" style="display: none">
         <div class="level">
           <div class="level-left">
             <div class="level-item">
@@ -178,7 +178,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <button class="button is-primary" onclick="openJobModal()">
+              <button class="button is-primary" onclick="openJobModal()" data-cy="new-job-btn">
                 <span class="icon">
                   <i class="fas fa-plus"></i>
                 </span>
@@ -187,11 +187,11 @@
             </div>
           </div>
         </div>
-        <div id="jobs-list"></div>
+        <div id="jobs-list" data-cy="jobs-list"></div>
       </div>
 
       <!-- Seção Pagamentos -->
-      <div id="section-pagamentos" style="display: none">
+      <div id="section-pagamentos" data-cy="section-pagamentos" style="display: none">
         <div class="level">
           <div class="level-left">
             <div class="level-item">
@@ -200,7 +200,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <button class="button is-primary" onclick="openPaymentModal()">
+              <button class="button is-primary" onclick="openPaymentModal()" data-cy="new-payment-btn">
                 <span class="icon">
                   <i class="fas fa-plus"></i>
                 </span>
@@ -209,20 +209,20 @@
             </div>
           </div>
         </div>
-        <div id="payments-list"></div>
+        <div id="payments-list" data-cy="payments-list"></div>
       </div>
     </div>
 
     <!-- Modal Cliente -->
-    <div id="client-modal" class="modal">
+    <div id="client-modal" data-cy="client-modal" class="modal">
       <div class="modal-background" onclick="closeClientModal()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title" id="client-modal-title">Novo Cliente</p>
+          <p class="modal-card-title" id="client-modal-title" data-cy="client-modal-title">Novo Cliente</p>
           <button class="delete" onclick="closeClientModal()"></button>
         </header>
         <section class="modal-card-body">
-          <form id="client-form">
+          <form id="client-form" data-cy="client-form">
             <input type="hidden" id="client-id" />
             <div class="field">
               <label class="label">Nome</label>
@@ -230,7 +230,7 @@
                 <input
                   class="input"
                   type="text"
-                  id="client-nome"
+                  id="client-nome" data-cy="client-nome"
                   placeholder="Nome do cliente"
                   required
                 />
@@ -242,7 +242,7 @@
                 <input
                   class="input"
                   type="text"
-                  id="client-contato"
+                  id="client-contato" data-cy="client-contato"
                   placeholder="Email ou telefone"
                 />
               </div>
@@ -250,30 +250,30 @@
           </form>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success" onclick="saveClient()">
+          <button class="button is-success" onclick="saveClient()" data-cy="client-save-btn">
             Salvar
           </button>
-          <button class="button" onclick="closeClientModal()">Cancelar</button>
+          <button class="button" onclick="closeClientModal()" data-cy="client-cancel-btn">Cancelar</button>
         </footer>
       </div>
     </div>
 
     <!-- Modal Job -->
-    <div id="job-modal" class="modal">
+    <div id="job-modal" data-cy="job-modal" class="modal">
       <div class="modal-background" onclick="closeJobModal()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title" id="job-modal-title">Novo Job</p>
+          <p class="modal-card-title" id="job-modal-title" data-cy="job-modal-title">Novo Job</p>
           <button class="delete" onclick="closeJobModal()"></button>
         </header>
         <section class="modal-card-body">
-          <form id="job-form">
+          <form id="job-form" data-cy="job-form">
             <input type="hidden" id="job-id" />
             <div class="field">
               <label class="label">Cliente</label>
               <div class="control">
                 <div class="select is-fullwidth">
-                  <select id="job-cliente" required>
+                  <select id="job-cliente" data-cy="job-cliente" required>
                     <option value="">Selecione um cliente</option>
                   </select>
                 </div>
@@ -284,7 +284,7 @@
               <div class="control">
                 <textarea
                   class="textarea"
-                  id="job-descricao"
+                  id="job-descricao" data-cy="job-descricao"
                   placeholder="Descrição do trabalho"
                   required
                 ></textarea>
@@ -297,7 +297,7 @@
                   class="input"
                   type="number"
                   step="0.01"
-                  id="job-valor"
+                  id="job-valor" data-cy="job-valor"
                   placeholder="0.00"
                   required
                 />
@@ -307,7 +307,7 @@
               <label class="label">Status</label>
               <div class="control">
                 <div class="select is-fullwidth">
-                  <select id="job-status" required>
+                  <select id="job-status" data-cy="job-status" required>
                     <option value="pendente">Pendente</option>
                     <option value="em_andamento">Em Andamento</option>
                     <option value="concluido">Concluído</option>
@@ -322,7 +322,7 @@
                 <input
                   class="input"
                   type="datetime-local"
-                  id="job-data"
+                  id="job-data" data-cy="job-data"
                   required
                 />
               </div>
@@ -330,14 +330,14 @@
           </form>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success" onclick="saveJob()">Salvar</button>
-          <button class="button" onclick="closeJobModal()">Cancelar</button>
+          <button class="button is-success" onclick="saveJob()" data-cy="job-save-btn">Salvar</button>
+          <button class="button" onclick="closeJobModal()" data-cy="job-cancel-btn">Cancelar</button>
         </footer>
       </div>
     </div>
 
     <!-- Modal Pagamento -->
-    <div id="payment-modal" class="modal">
+    <div id="payment-modal" data-cy="payment-modal" class="modal">
       <div class="modal-background" onclick="closePaymentModal()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -345,12 +345,12 @@
           <button class="delete" onclick="closePaymentModal()"></button>
         </header>
         <section class="modal-card-body">
-          <form id="payment-form">
+          <form id="payment-form" data-cy="payment-form">
             <div class="field">
               <label class="label">Job</label>
               <div class="control">
                 <div class="select is-fullwidth">
-                  <select id="payment-job" required>
+                  <select id="payment-job" data-cy="payment-job" required>
                     <option value="">Selecione um job</option>
                   </select>
                 </div>
@@ -363,7 +363,7 @@
                   class="input"
                   type="number"
                   step="0.01"
-                  id="payment-valor"
+                  id="payment-valor" data-cy="payment-valor"
                   placeholder="0.00"
                   required
                 />
@@ -373,7 +373,7 @@
               <label class="label">Status</label>
               <div class="control">
                 <label class="checkbox">
-                  <input type="checkbox" id="payment-recebido" />
+                  <input type="checkbox" id="payment-recebido" data-cy="payment-recebido" />
                   Pagamento Recebido
                 </label>
               </div>
@@ -384,7 +384,7 @@
                 <input
                   class="input"
                   type="datetime-local"
-                  id="payment-data"
+                  id="payment-data" data-cy="payment-data"
                   required
                 />
               </div>
@@ -392,17 +392,17 @@
           </form>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success" onclick="savePayment()">
+          <button class="button is-success" onclick="savePayment()" data-cy="payment-save-btn">
             Salvar
           </button>
-          <button class="button" onclick="closePaymentModal()">Cancelar</button>
+          <button class="button" onclick="closePaymentModal()" data-cy="payment-cancel-btn">Cancelar</button>
         </footer>
       </div>
     </div>
 
     <!-- Area de notificação -->
     <div
-      id="notification-area"
+      id="notification-area" data-cy="notification-area"
       class="is-fixed"
       style="
         position: fixed;

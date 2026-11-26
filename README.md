@@ -59,3 +59,21 @@ meu-freela-m2-web/
 ## Licença
 
 Este projeto está sob licença ISC.
+
+## Testes E2E (Cypress)
+
+Os testes ficam em `cypress/e2e/` e cobrem registro, login, clientes, jobs e pagamentos.
+
+1. Suba a API (`meu-freela-m2`) em `http://localhost:3000`.
+2. Suba esta aplicação com `npm start` (porta 4000).
+3. Rode os testes:
+   ```bash
+   npm run cy:run    # modo headless
+   npm run cy:open   # interface do Cypress
+   ```
+
+Seletores: os elementos usados nos testes têm o atributo `data-cy` (ex.: `[data-cy=client-nome]`, `[data-cy=new-job-btn]`). Os cards das listas têm `data-cy` e `data-id` com o id do registro (ex.: `[data-cy=client-card][data-id=3]`).
+
+Comandos customizados (`cypress/support/commands.js`): `cy.openDashboard()` cria um usuário e abre o dashboard já logado; `cy.createClientByApi()`, `cy.createJobByApi()` e `cy.createPaymentByApi()` preparam dados pela API.
+
+A API guarda tudo em memória e não separa dados por usuário. Reinicie a API para começar com o banco vazio.

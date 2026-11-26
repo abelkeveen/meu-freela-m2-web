@@ -30,14 +30,30 @@ jobs:
           npm ci
           nohup node server.js > ../api.log 2>&1 &
 
-      # Instala as dependências do app, sobe o app (porta 4000), espera a API e o
-      # app responderem e roda todos os specs do Cypress no modo headless.
+      - name: Instalar dependências do app
+        run: npm ci
+
+      - name: Subir o app (porta 4000)
+        run: nohup npm start > app.log 2>&1 &
+
+      # Espera a API e o app responderem antes de rodar os testes
+      - name: Esperar API e app
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf -o /dev/null http://127.0.0.1:3000/swagger/ && curl -sf -o /dev/null http://127.0.0.1:4000/; then
+              echo "API e app no ar"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API ou app não subiram a tempo"
+          cat api.log app.log
+          exit 1
+
       - name: Rodar testes Cypress
         uses: cypress-io/github-action@v6
         with:
-          start: npm start
-          wait-on: "http://localhost:3000/swagger/, http://localhost:4000"
-          wait-on-timeout: 120
+          install: false
 
       - name: Publicar screenshots das falhas
         if: failure()
@@ -52,6 +68,8 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: api-log
-          path: api.log
+          name: logs-servidores
+          path: |
+            api.log
+            app.log
           retention-days: 30

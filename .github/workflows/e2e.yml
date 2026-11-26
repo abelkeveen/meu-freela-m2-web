@@ -1,0 +1,75 @@
+name: Testes E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o app web
+        uses: actions/checkout@v4
+
+      # A API é outro repositório (público). Fica na pasta api/ só durante o job.
+      - name: Baixar a API
+        uses: actions/checkout@v4
+        with:
+          repository: abelkeveen/meu-freela-m2
+          path: api
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Subir a API (porta 3000)
+        working-directory: api
+        run: |
+          npm ci
+          nohup node server.js > ../api.log 2>&1 &
+
+      - name: Instalar dependências do app
+        run: npm ci
+
+      - name: Subir o app (porta 4000)
+        run: nohup npm start > app.log 2>&1 &
+
+      # Espera a API e o app responderem antes de rodar os testes
+      - name: Esperar API e app
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf -o /dev/null http://127.0.0.1:3000/swagger/ && curl -sf -o /dev/null http://127.0.0.1:4000/; then
+              echo "API e app no ar"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API ou app não subiram a tempo"
+          cat api.log app.log
+          exit 1
+
+      - name: Rodar testes Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          install: false
+
+      - name: Publicar screenshots das falhas
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Publicar log da API
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-servidores
+          path: |
+            api.log
+            app.log
+          retention-days: 30

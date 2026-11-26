@@ -77,3 +77,7 @@ Seletores: os elementos usados nos testes têm o atributo `data-cy` (ex.: `[data
 Comandos customizados (`cypress/support/commands.js`): `cy.openDashboard()` cria um usuário e abre o dashboard já logado; `cy.createClientByApi()`, `cy.createJobByApi()` e `cy.createPaymentByApi()` preparam dados pela API.
 
 A API guarda tudo em memória e não separa dados por usuário. Reinicie a API para começar com o banco vazio.
+
+### CI (GitHub Actions)
+
+O workflow `.github/workflows/e2e.yml` roda a cada PR, a cada push na `main` e manualmente (aba Actions). Ele baixa a API do repositório `meu-freela-m2`, sobe a API (porta 3000) e o app (porta 4000) e roda todos os specs do Cypress. Se algum teste falhar, os screenshots e o log da API ficam disponíveis como artefatos da execução.

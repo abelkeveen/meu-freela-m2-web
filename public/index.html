@@ -44,16 +44,16 @@
                 <!-- Tabs para alternar entre Login e Registro -->
                 <div class="tabs is-centered is-boxed">
                   <ul>
-                    <li id="login-tab" class="is-active">
-                      <a onclick="showLogin()">
+                    <li id="login-tab" data-cy="login-tab" class="is-active">
+                      <a onclick="showLogin()" data-cy="login-tab-link">
                         <span class="icon is-small"
                           ><i class="fas fa-sign-in-alt"></i
                         ></span>
                         <span>Login</span>
                       </a>
                     </li>
-                    <li id="register-tab">
-                      <a onclick="showRegister()">
+                    <li id="register-tab" data-cy="register-tab">
+                      <a onclick="showRegister()" data-cy="register-tab-link">
                         <span class="icon is-small"
                           ><i class="fas fa-user-plus"></i
                         ></span>
@@ -64,14 +64,14 @@
                 </div>
 
                 <!-- Formulário de Login -->
-                <form id="login-form">
+                <form id="login-form" data-cy="login-form">
                   <div class="field">
                     <label class="label">Login</label>
                     <div class="control has-icons-left">
                       <input
                         class="input"
                         type="text"
-                        id="login-username"
+                        id="login-username" data-cy="login-username"
                         placeholder="Digite seu login"
                         required
                       />
@@ -87,7 +87,7 @@
                       <input
                         class="input"
                         type="password"
-                        id="login-password"
+                        id="login-password" data-cy="login-password"
                         placeholder="Digite sua senha"
                         required
                       />
@@ -102,7 +102,7 @@
                       <button
                         class="button is-primary is-fullwidth"
                         type="submit"
-                        id="login-btn"
+                        id="login-btn" data-cy="login-btn"
                       >
                         <span class="icon is-small">
                           <i class="fas fa-sign-in-alt"></i>
@@ -114,14 +114,14 @@
                 </form>
 
                 <!-- Formulário de Registro -->
-                <form id="register-form" style="display: none">
+                <form id="register-form" data-cy="register-form" style="display: none">
                   <div class="field">
                     <label class="label">Login</label>
                     <div class="control has-icons-left">
                       <input
                         class="input"
                         type="text"
-                        id="register-username"
+                        id="register-username" data-cy="register-username"
                         placeholder="Digite um login"
                         required
                       />
@@ -137,7 +137,7 @@
                       <input
                         class="input"
                         type="password"
-                        id="register-password"
+                        id="register-password" data-cy="register-password"
                         placeholder="Digite uma senha"
                         required
                       />
@@ -152,7 +152,7 @@
                       <button
                         class="button is-success is-fullwidth"
                         type="submit"
-                        id="register-btn"
+                        id="register-btn" data-cy="register-btn"
                       >
                         <span class="icon is-small">
                           <i class="fas fa-user-plus"></i>
@@ -164,7 +164,7 @@
                 </form>
 
                 <!-- Area de mensagens -->
-                <div id="message-area"></div>
+                <div id="message-area" data-cy="message-area"></div>
               </div>
             </div>
           </div>
@@ -196,7 +196,7 @@
       function showMessage(message, type = "danger") {
         const messageArea = document.getElementById("message-area");
         messageArea.innerHTML = `
-                <div class="notification is-${type}">
+                <div class="notification is-${type}" data-cy="message">
                     <button class="delete" onclick="clearMessages()"></button>
                     ${message}
                 </div>

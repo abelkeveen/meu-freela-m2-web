@@ -40,7 +40,7 @@ app.post("/api/auth/register", async (req, res) => {
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro interno do servidor";
+    const message = error.response?.data?.error || "Erro interno do servidor";
     res.status(status).json({ error: message });
   }
 });
@@ -51,7 +51,7 @@ app.post("/api/auth/login", async (req, res) => {
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Credenciais inválidas";
+    const message = error.response?.data?.error || "Credenciais inválidas";
     res.status(status).json({ error: message });
   }
 });
@@ -65,7 +65,7 @@ app.get("/api/clients", authenticateToken, async (req, res) => {
     res.json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao buscar clientes";
+    const message = error.response?.data?.error || "Erro ao buscar clientes";
     res.status(status).json({ error: message });
   }
 });
@@ -78,7 +78,7 @@ app.post("/api/clients", authenticateToken, async (req, res) => {
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao criar cliente";
+    const message = error.response?.data?.error || "Erro ao criar cliente";
     res.status(status).json({ error: message });
   }
 });
@@ -96,7 +96,7 @@ app.put("/api/clients/:id", authenticateToken, async (req, res) => {
   } catch (error) {
     const status = error.response?.status || 500;
     const message =
-      error.response?.data?.message || "Erro ao atualizar cliente";
+      error.response?.data?.error || "Erro ao atualizar cliente";
     res.status(status).json({ error: message });
   }
 });
@@ -114,7 +114,7 @@ app.delete("/api/clients/:id", authenticateToken, async (req, res) => {
       .json({ message: "Cliente removido com sucesso" });
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao remover cliente";
+    const message = error.response?.data?.error || "Erro ao remover cliente";
     res.status(status).json({ error: message });
   }
 });
@@ -128,7 +128,7 @@ app.get("/api/jobs", authenticateToken, async (req, res) => {
     res.json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao buscar jobs";
+    const message = error.response?.data?.error || "Erro ao buscar jobs";
     res.status(status).json({ error: message });
   }
 });
@@ -141,7 +141,7 @@ app.post("/api/jobs", authenticateToken, async (req, res) => {
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao criar job";
+    const message = error.response?.data?.error || "Erro ao criar job";
     res.status(status).json({ error: message });
   }
 });
@@ -158,7 +158,7 @@ app.put("/api/jobs/:id", authenticateToken, async (req, res) => {
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao atualizar job";
+    const message = error.response?.data?.error || "Erro ao atualizar job";
     res.status(status).json({ error: message });
   }
 });
@@ -174,7 +174,7 @@ app.delete("/api/jobs/:id", authenticateToken, async (req, res) => {
     res.status(response.status).json({ message: "Job removido com sucesso" });
   } catch (error) {
     const status = error.response?.status || 500;
-    const message = error.response?.data?.message || "Erro ao remover job";
+    const message = error.response?.data?.error || "Erro ao remover job";
     res.status(status).json({ error: message });
   }
 });
@@ -189,7 +189,7 @@ app.get("/api/payments", authenticateToken, async (req, res) => {
   } catch (error) {
     const status = error.response?.status || 500;
     const message =
-      error.response?.data?.message || "Erro ao buscar pagamentos";
+      error.response?.data?.error || "Erro ao buscar pagamentos";
     res.status(status).json({ error: message });
   }
 });
@@ -204,7 +204,7 @@ app.post("/api/payments", authenticateToken, async (req, res) => {
   } catch (error) {
     const status = error.response?.status || 500;
     const message =
-      error.response?.data?.message || "Erro ao registrar pagamento";
+      error.response?.data?.error || "Erro ao registrar pagamento";
     res.status(status).json({ error: message });
   }
 });
@@ -218,7 +218,7 @@ app.get("/api/payments/summary", authenticateToken, async (req, res) => {
   } catch (error) {
     const status = error.response?.status || 500;
     const message =
-      error.response?.data?.message || "Erro ao buscar resumo financeiro";
+      error.response?.data?.error || "Erro ao buscar resumo financeiro";
     res.status(status).json({ error: message });
   }
 });
@@ -236,7 +236,7 @@ app.put("/api/payments/:id/status", authenticateToken, async (req, res) => {
   } catch (error) {
     const status = error.response?.status || 500;
     const message =
-      error.response?.data?.message || "Erro ao atualizar status do pagamento";
+      error.response?.data?.error || "Erro ao atualizar status do pagamento";
     res.status(status).json({ error: message });
   }
 });

@@ -1,0 +1,57 @@
+name: Testes E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o app web
+        uses: actions/checkout@v4
+
+      # A API é outro repositório (público). Fica na pasta api/ só durante o job.
+      - name: Baixar a API
+        uses: actions/checkout@v4
+        with:
+          repository: abelkeveen/meu-freela-m2
+          path: api
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Subir a API (porta 3000)
+        working-directory: api
+        run: |
+          npm ci
+          nohup node server.js > ../api.log 2>&1 &
+
+      # Instala as dependências do app, sobe o app (porta 4000), espera a API e o
+      # app responderem e roda todos os specs do Cypress no modo headless.
+      - name: Rodar testes Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: "http://localhost:3000/swagger/, http://localhost:4000"
+          wait-on-timeout: 120
+
+      - name: Publicar screenshots das falhas
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Publicar log da API
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-log
+          path: api.log
+          retention-days: 30
